@@ -13,7 +13,7 @@ const customStyleMenuLink = "hover:bg-[#93005b] rounded-lg p-2 transition-all"
 
 export default function HeaderNavigation() {
     return (
-        <NavigationMenu>
+        <NavigationMenu className="h-full">
             <NavigationMenuList className="gap-5">
                 <NavigationMenu className="text-white" orientation="horizontal">
                     <NavigationMenuList className="gap-5">
