@@ -5,7 +5,7 @@ import HeaderNavigation from "./HeaderNavigation";
 
 export default function Header({ title }: { title: string }) {
     return (
-        <header className={`${poppins.className} bg-[#7a004b] h-25/100 w-full flex flex-col `}>
+        <header className={`${poppins.className} bg-[#7a004b] h-48 w-full flex flex-col `}>
             <figure className="w-full h-60/100 flex items-center justify-center">
                 <Image src={LogoProcon} alt="Logo do Procon" className="w-fit h-full object-contain self-end" />
             </figure>
