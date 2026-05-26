@@ -1,5 +1,5 @@
 import Image from "next/image";
-import LogoProcon from '../../../public/log-procon2.png';
+import LogoProcon from '../../../public/HeaderLogo.png';
 import { poppins } from "../layout";
 import HeaderNavigation from "./HeaderNavigation";
 
