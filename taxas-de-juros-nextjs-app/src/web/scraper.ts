@@ -12,20 +12,22 @@ type PeriodKeyMap = keyof typeof interestRatesPeriod;
 
 export async function interestRateDataScraper({ searchTargets, selectedPeriod }: { searchTargets: string[], selectedPeriod: PeriodKeyMap }): Promise<DataScraperType> {
 
-    console.time('tempo')
     const scraperSucessResult: DataScraperSucess[] = [];
     const scraperErrorResult: DataScraperError[] = [];
 
-    const browser = await playwright.chromium.launch({ args: customOptimizationBrowserArgsLaunch })
+    const browser = await playwright.chromium.launch({ args: customOptimizationBrowserArgsLaunch });
     const context = await customContext(browser);
     const page = await context.newPage();
     await customOptimizationPageRoute(page);
+
+    let counter = 1;
 
     for (const target of searchTargets) {
 
         try {
 
-            await page.goto('https://www.bcb.gov.br/estatisticas/txjuros');
+            counter === 1 ? await page.goto('https://www.bcb.gov.br/estatisticas/txjuros') : await page.locator('bcb-breadcrumb nav ol li:nth-child(3)').click();
+
             await page.waitForSelector('bcb-loading', { state: 'hidden' });
 
             try {
@@ -34,41 +36,36 @@ export async function interestRateDataScraper({ searchTargets, selectedPeriod }:
 
             } catch (error) {
 
-                scraperErrorResult.push({ type: 'targetError', errorTarget: target });
+                scraperErrorResult[scraperErrorResult.length] = { type: 'targetError', errorTarget: target };
                 break;
             }
 
-            const regexYear = /\/[0-9][0-9][0-9][0-9]/g
-            const period = (await page.getByRole("paragraph").filter({ hasText: "Período: " }).locator("> strong").textContent())?.replaceAll(regexYear, "");
+            const period: string = await page.getByRole("paragraph").filter({ hasText: "Período: " }).locator("> strong").textContent() ?? '';
             const modality: string = await page.getByRole("paragraph").filter({ hasText: "Modalidade: " }).locator("> strong").textContent() ?? target;
 
-            await page.waitForSelector('table', { state: 'visible', timeout: 90000 });
-            const tableHeaderCells = await page.locator('table thead tr:nth-child(2) th:nth-child(n)').allInnerTexts();
+            const tableHeaderCells = await page.$$eval('table thead tr:nth-child(2) th', headerCells => headerCells.map(headerCell => headerCell.textContent));
             const selectedColumnIndex = tableHeaderCells.findIndex(text => text.trim() === interestRatesPeriod[selectedPeriod]) + 1;
-            const paginationItems: number = await page.locator('ul.pagination li').count();
-            const interestRates: number[] = (await page.locator(`table tbody tr td:nth-child(${selectedColumnIndex})`).allInnerTexts()).map(text => parseFloat(text.replace(',', '.')));
+            const interestRates: number[] = await page.$$eval(`table tbody tr td:nth-child(${selectedColumnIndex})`, tableCells => tableCells.map(cells => +((cells.textContent ?? '').replace(',', '.'))));
+            const paginationItems: number = await page.locator('ul.pagination li > a', { hasText: /[0-9]{1,}/ }).count();
 
             if (paginationItems > 0) {
-                for (let i = 0; i < paginationItems - 5; i++) {
+                for (let currentPage = 1; currentPage < paginationItems; currentPage++) {
                     await page.getByRole('link', { name: "›" }).first().click();
-                    await page.waitForSelector('table', { state: 'visible', timeout: 90000 });
-                    interestRates.push(...(await page.locator(`table tbody tr td:nth-child(${selectedColumnIndex})`).allInnerTexts()).map(text => parseFloat(text.replace(',', '.'))));
+                    await page.waitForSelector('table', { state: 'visible' });
+                    interestRates.push(...(await page.$$eval(`table tbody tr td:nth-child(${selectedColumnIndex})`, tableCells => tableCells.map(cells => +((cells.textContent ?? '').replace(',', '.'))))));
                 }
             }
 
             const averageInterestRate = interestRates.reduce((sum, rate) => sum + rate, 0) / interestRates.length;
 
-            const regexLetters = /[a-zA-Z]/gm
-
             const structureResultObject: DataScraperSucess = {
-                consultPeriod: period?.replaceAll(regexLetters, "-"),
+                consultPeriod: period,
                 modality: modality,
-                averageInterestRate: Number(averageInterestRate.toFixed(2)),
+                averageInterestRate: averageInterestRate.toFixed(2),
                 interestRatePeriod: interestRatesPeriod[selectedPeriod],
-            }
+            };
 
-            scraperSucessResult.push(structureResultObject);
-
+            scraperSucessResult[scraperSucessResult.length] = structureResultObject;
 
         } catch (error) {
             await browser.close();
@@ -77,10 +74,10 @@ export async function interestRateDataScraper({ searchTargets, selectedPeriod }:
                 error: { type: 'connectionError' }
             }
         }
+        counter++;
     }
 
     await browser.close();
-    console.timeEnd('tempo')
 
     return {
         sucess: true,
@@ -89,18 +86,4 @@ export async function interestRateDataScraper({ searchTargets, selectedPeriod }:
             error: scraperErrorResult
         }
     }
-
 }
-
-(
-    async () => {
-        const res = await interestRateDataScraper({
-            searchTargets: searchTarget,
-            selectedPeriod: 'Mensal'
-        });
-        if (res.sucess) {
-            console.log(res.result.sucess);
-
-        }
-    }
-)()
