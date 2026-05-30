@@ -6,7 +6,7 @@ export interface DataScraperError {
 export interface DataScraperSucess {
     consultPeriod?: string;
     modality: string;
-    averageInterestRate: number;
+    averageInterestRate: string;
     interestRatePeriod: string;
 }
 
