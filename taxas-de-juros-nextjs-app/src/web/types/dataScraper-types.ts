@@ -4,15 +4,15 @@ export interface DataScraperError {
 }
 
 export interface DataScraperSucess {
-    consultPeriod?: string;
-    modality: string;
-    averageInterestRate: string;
+    periods: string[];
+    modalities: string[];
+    averageInterestRates: string[];
     interestRatePeriod: string;
 }
 
 export interface DataScraperResult {
-    sucess?: DataScraperSucess[];
-    error?: DataScraperError[];
+    passed?: DataScraperSucess;
+    failed?: DataScraperError[];
 }
 
 export type DataScraperType = { sucess: true, result: DataScraperResult } | { sucess: false, error: DataScraperError }
