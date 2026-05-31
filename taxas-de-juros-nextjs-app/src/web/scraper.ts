@@ -1,7 +1,6 @@
 import playwright from 'playwright';
 import { customOptimizationBrowserArgsLaunch, customContext, customOptimizationPageRoute } from './config/customDefinitions.config';
-import { DataScraperType, DataScraperSucess, DataScraperError } from './types/dataScraper-types';
-import { searchTarget } from './constants';
+import { DataScraperType, DataScraperError } from './types/dataScraper-types';
 
 const interestRatesPeriod = {
     'Anual': '% a.a.',
@@ -12,15 +11,18 @@ type PeriodKeyMap = keyof typeof interestRatesPeriod;
 
 export async function interestRateDataScraper({ searchTargets, selectedPeriod }: { searchTargets: string[], selectedPeriod: PeriodKeyMap }): Promise<DataScraperType> {
 
-    const scraperSucessResult: DataScraperSucess[] = [];
+    console.time('tempo-execucao-total');
+
+    let counter = 1;
     const scraperErrorResult: DataScraperError[] = [];
+    const modalities: string[] = [];
+    const periods: string[] = [];
+    const averageInterestRates: string[] = [];
 
     const browser = await playwright.chromium.launch({ args: customOptimizationBrowserArgsLaunch });
     const context = await customContext(browser);
     const page = await context.newPage();
     await customOptimizationPageRoute(page);
-
-    let counter = 1;
 
     for (const target of searchTargets) {
 
@@ -37,7 +39,7 @@ export async function interestRateDataScraper({ searchTargets, selectedPeriod }:
             } catch (error) {
 
                 scraperErrorResult[scraperErrorResult.length] = { type: 'targetError', errorTarget: target };
-                break;
+                continue;
             }
 
             const period: string = await page.getByRole("paragraph").filter({ hasText: "Período: " }).locator("> strong").textContent() ?? '';
@@ -58,14 +60,9 @@ export async function interestRateDataScraper({ searchTargets, selectedPeriod }:
 
             const averageInterestRate = interestRates.reduce((sum, rate) => sum + rate, 0) / interestRates.length;
 
-            const structureResultObject: DataScraperSucess = {
-                consultPeriod: period,
-                modality: modality,
-                averageInterestRate: averageInterestRate.toFixed(2),
-                interestRatePeriod: interestRatesPeriod[selectedPeriod],
-            };
-
-            scraperSucessResult[scraperSucessResult.length] = structureResultObject;
+            modalities[modalities.length] = modality;
+            periods[periods.length] = period;
+            averageInterestRates[averageInterestRates.length] = averageInterestRate.toFixed(2);
 
         } catch (error) {
             await browser.close();
@@ -79,11 +76,18 @@ export async function interestRateDataScraper({ searchTargets, selectedPeriod }:
 
     await browser.close();
 
+    console.timeEnd('tempo-execucao-total');
+
     return {
         sucess: true,
         result: {
-            sucess: scraperSucessResult,
-            error: scraperErrorResult
+            passed: {
+                periods: periods,
+                modalities: modalities,
+                averageInterestRates: averageInterestRates,
+                interestRatePeriod: interestRatesPeriod[selectedPeriod]
+            },
+            failed: scraperErrorResult
         }
     }
 }
