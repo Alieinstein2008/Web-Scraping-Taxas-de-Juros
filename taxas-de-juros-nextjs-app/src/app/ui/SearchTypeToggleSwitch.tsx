@@ -3,23 +3,23 @@
 import { useEffect, useRef } from "react";
 
 import { poppins } from "../layout";
-import { searchTypeToggleSwitchMapping } from "@/src/web/constants";
 
 interface SearchTypeToggleSwitch {
     textOnLeftSide: string;
     textOnRightSide: string;
-    onToggle: (selectedSide: string) => void
+    binaryMap: { [key: string]: string }
+    onToggle: (binaryMapValue: string) => void
 }
 
-export default function SearchTypeToggleSwitch({ textOnLeftSide, textOnRightSide, onToggle }: SearchTypeToggleSwitch) {
+export default function SearchTypeToggleSwitch({ textOnLeftSide, textOnRightSide, binaryMap, onToggle }: SearchTypeToggleSwitch) {
 
-    type keyMap = keyof typeof searchTypeToggleSwitchMapping;
+    type BinaryMapKeys = keyof typeof binaryMap;
 
-    let selectedSide = useRef(1);
+    let indexKey = useRef(1);
 
     const handleChange = () => {
-        selectedSide.current = selectedSide.current ? 0 : 1;
-        onToggle(searchTypeToggleSwitchMapping[Object.keys(searchTypeToggleSwitchMapping)[selectedSide.current] as keyMap])
+        indexKey.current = indexKey.current ? 0 : 1;
+        onToggle(binaryMap[Object.keys(binaryMap)[indexKey.current] as BinaryMapKeys])
     }
 
     useEffect(handleChange, []);
