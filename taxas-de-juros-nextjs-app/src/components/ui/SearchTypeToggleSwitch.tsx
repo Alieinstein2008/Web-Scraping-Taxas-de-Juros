@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-import { poppins } from "../layout";
+import { poppins } from "@/src/app/layout";
 
 interface SearchTypeToggleSwitch {
     textOnLeftSide: string;

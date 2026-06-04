@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ItemCardInterface } from '@/src/types/item-card.types';
-import { poppins } from "../layout";
+import { poppins } from "@/src/app/layout";
 import { ItemCard } from './ItemCard';
 
 interface AddedItemsBoardProps {

@@ -1,4 +1,4 @@
-import { poppins } from "../layout";
+import { poppins } from "@/src/app/layout";
 import AddButton from "./AddButton";
 import TypingSuggestionList from "./TypingSuggestionList";
 
