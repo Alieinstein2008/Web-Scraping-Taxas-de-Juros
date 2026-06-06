@@ -4,10 +4,10 @@ export interface DataScraperError {
 }
 
 interface DataScraperSucess {
-    periods: string[];
+    period: string;
     modalities: string[];
     averageInterestRates: string[];
-    interestRatePeriod: string[];
+    interestRatePeriod: string;
 }
 
 export interface DataScraperResult {
