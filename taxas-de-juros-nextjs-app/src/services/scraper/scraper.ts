@@ -84,11 +84,11 @@ async function scraperTarget(page: playwright.Page, target: string, selectedPeri
 }
 
 export async function interestRateDataScraper({ searchTargets, selectedPeriod }: { searchTargets: string[], selectedPeriod: PeriodValueMap }): Promise<DataScraperType> {
-    console.time('tempo-execucao-total');
 
     const scraperErrorResult: DataScraperError[] = [];
     const modalities: string[] = [];
     const periods: string[] = [];
+    let formattedPeriod: string = '';
     const averageInterestRates: string[] = [];
 
     const browser = await playwright.chromium.launch({ args: customOptimizationBrowserArgsLaunch, headless: true });
@@ -124,19 +124,17 @@ export async function interestRateDataScraper({ searchTargets, selectedPeriod }:
         };
     }
 
-
-    periods.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
-    let [olderDate, recentDate] = [periods[0].split('-'), periods[periods.length - 1].split('-')];
-
-    const period = `${olderDate[2]}/${olderDate[1]} - ${recentDate[2]}/${recentDate[1]}`;
-
-    console.timeEnd('tempo-execucao-total');
+    if (periods.length > 0) {
+        periods.sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+        const [olderDate, recentDate] = [periods[0].split('-'), periods[periods.length - 1].split('-')];
+        formattedPeriod = `${olderDate[2]}/${olderDate[1]} - ${recentDate[2]}/${recentDate[1]}`;
+    }
 
     return {
         sucess: true,
         result: {
             passed: {
-                period: period,
+                period: formattedPeriod,
                 modalities: modalities,
                 averageInterestRates: averageInterestRates,
                 interestRatePeriod: selectedPeriod
