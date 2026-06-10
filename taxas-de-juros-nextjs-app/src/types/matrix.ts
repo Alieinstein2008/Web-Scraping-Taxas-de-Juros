@@ -30,8 +30,10 @@ export class Matrix {
 
         switch (type) {
             case 'HeaderRow':
-                this.HeaderRow = row;
-                break;
+                if (this.HeaderRow.getCellValue(0) == 'cell not found') this.HeaderRow = row;
+                else {
+                    this.
+                }
 
             case 'FirstRow':
                 this.FirstRow = row;
@@ -41,7 +43,7 @@ export class Matrix {
                 if (this.SecondRow.getCellValue(0) == 'cell not found') this.SecondRow = row;
                 else {
                     this.FirstRow = this.SecondRow;
-                    this.SecondRow = row.getCellValue(0) != this.SecondRow.getCellValue(0) && row.getCellValue(1) != row.getCellValue(1)
+                    this.SecondRow = row.getCellValue(0) != this.SecondRow.getCellValue(0) && row.getCellValue(1) != this.SecondRow.getCellValue(1)
                         ? row
                         : this.SecondRow
                 }
