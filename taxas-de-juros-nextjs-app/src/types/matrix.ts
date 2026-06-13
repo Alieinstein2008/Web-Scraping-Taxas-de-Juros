@@ -32,8 +32,14 @@ export class Matrix {
             case 'HeaderRow':
                 if (this.HeaderRow.getCellValue(0) == 'cell not found') this.HeaderRow = row;
                 else {
-                    this.
+                    const setA = new Set(this.HeaderRow.Cells.map(cell => cell.value));
+                    const setB = new Set(row.Cells.map(cell => cell.value));
+                    const difference = [...setB.difference(setA)];
+                    for (let index = 0; index < difference.length; index++) {
+                        this.HeaderRow.addNewCell(new Cell(difference[index]));
+                    }
                 }
+                break;
 
             case 'FirstRow':
                 this.FirstRow = row;
@@ -103,13 +109,13 @@ export class Matrix {
 
         const numberColumnsPerRow = [
             this.HeaderRow.getNumberColumns(),
-            this.FirstRow.getNumberColumns(),
-            this.SecondRow.getNumberColumns(),
+                    this.FirstRow.getNumberColumns(),
+                    this.SecondRow.getNumberColumns(),
         ];
 
         const numberColumnsInAscendingOrder = numberColumnsPerRow.sort((a, b) => a - b);
 
-        const maximumNumberColumns = numberColumnsInAscendingOrder[numberColumnsInAscendingOrder.length - 1] > numberColumnsInAscendingOrder[numberColumnsInAscendingOrder.length - 2]
+        const maximumNumberColumns = numberColumnsInAscendingOrder[numberColumnsInAscendingOrder.length - 1] >= numberColumnsInAscendingOrder[numberColumnsInAscendingOrder.length - 2]
             ? numberColumnsInAscendingOrder[numberColumnsInAscendingOrder.length - 1]
             : 0
 
