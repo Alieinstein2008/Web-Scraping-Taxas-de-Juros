@@ -16,7 +16,7 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
     "lucide-react": "^1.14.0",
-    "next": "^16.2.6",
+    "next": "^16.2.9",
     "next-themes": "^0.4.6",
     "pg": "^8.21.0",
     "radix-ui": "^1.4.3",
@@ -36,9 +36,17 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.5",
-    "prisma": "^7.8.0",
+    "prisma": "^6.19.3",
     "tailwindcss": "^4",
     "tsx": "^4.22.4",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "@prisma/engines@6.19.3": true,
+    "esbuild@0.28.1": true,
+    "msw@2.14.3": true,
+    "prisma@6.19.3": true,
+    "sharp@0.34.5": true,
+    "unrs-resolver@1.11.1": true
   }
 }
