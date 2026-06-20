@@ -1,0 +1,71 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PeriodType {
+  ANNUAL
+  MONTHLY
+}
+
+model Modality {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @map("id_modality") @db.Uuid
+  publicId  String    @unique @map("public_id_modality") @db.VarChar(30)
+  name      String    @map("modality_name")
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  historicalInterestRate HistoricalInterestRate[]
+
+  @@map("modalities")
+}
+
+model HistoricalInterestRate {
+  id         String     @id @default(dbgenerated("gen_random_uuid()")) @map("id_interest_rate") @db.Uuid
+  publicId   String     @unique @map("public_id_interest_rate") @db.VarChar(30)
+  periodType PeriodType @default(ANNUAL) @map("period_type")
+  rateValue  Decimal    @map("rate_value") @db.Decimal(5, 2)
+  createdAt  DateTime   @default(now()) @map("created_at")
+  updatedAt  DateTime?  @updatedAt @map("updated_at")
+
+  modalityId             String? @map("id_modality") @db.Uuid
+  financialInstitutionId String? @map("id_financial_institution") @db.Uuid
+  collectionPeriodId     String? @map("id_collection_period") @db.Uuid
+
+  financialInstitution FinancialInstitution? @relation(fields: [financialInstitutionId], references: [id])
+  modality             Modality?             @relation(fields: [modalityId], references: [id])
+  collectionPeriod     CollectionPeriod?     @relation(fields: [collectionPeriodId], references: [id])
+
+  @@map("historical_interest_rates")
+}
+
+model FinancialInstitution {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @map("id_financial_institution") @db.Uuid
+  publicId  String    @unique @map("public_id_financial_institution") @db.VarChar(30)
+  name      String    @map("financial_institution_name")
+  cnpj      String    @map("finacial_institution_cnpj") @db.Char(8)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @updatedAt @map("updated_at")
+
+  historicalInterestRates HistoricalInterestRate[]
+
+  @@map("financial_institutions")
+}
+
+model CollectionPeriod {
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
+  publicId    String    @unique @map("public_id") @db.VarChar(30)
+  validFrom   DateTime  @map("valid_from") @db.Date
+  validTo     DateTime  @map("valid_to") @db.Date
+  collectedAt DateTime  @map("collected_at") @db.Date
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @updatedAt @map("updated_at")
+
+  historicalInterestRates HistoricalInterestRate[]
+
+  @@map("collection_periods")
+}
