@@ -1,18 +1,33 @@
-export interface DataScraperError {
-    type: 'targetError' | 'connectionError';
-    errorTarget?: string;
+export interface FinancialInstitutionRate {
+    readonly institutionName: string,
+    readonly institutionCnpj: string,
+    readonly interestRate: string
 }
 
-interface DataScraperSucess {
-    period: string;
-    modalities: string[];
-    averageInterestRates: string[];
+export interface ModalityInterestRates {
+    readonly modality: string;
+    readonly validFrom: string;
+    readonly validTo: string;
+    readonly rates: FinancialInstitutionRate[];
+}
+
+export interface DataScraperError {
+    type: 'targetError' | 'connectionError' | 'columnError';
+    errorTarget?: string;
+    errorDetails?: unknown
+}
+
+interface DataScraperSuccess {
     interestRatePeriod: string;
+    modalities: ModalityInterestRates[];
 }
 
 export interface DataScraperResult {
-    passed?: DataScraperSucess;
+    passed?: DataScraperSuccess;
     failed?: DataScraperError[];
 }
 
-export type DataScraperType = { sucess: true, result: DataScraperResult } | { sucess: false, error: DataScraperError }
+export type DataScraperType = { success: true, result: DataScraperResult } | { success: false, error: DataScraperError }
+
+export type ScraperTargetType = { success: true, data: ModalityInterestRates } | { success: false, error: DataScraperError }
+
