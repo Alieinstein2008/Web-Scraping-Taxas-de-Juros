@@ -11,7 +11,6 @@
   "dependencies": {
     "@paralleldrive/cuid2": "^3.3.0",
     "@prisma/adapter-pg": "^7.8.0",
-    "@prisma/client": "^7.8.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
@@ -29,24 +28,25 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.59.1",
+    "@prisma/client": "^7.8.0",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.43",
     "@types/pg": "^8.20.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.5",
-    "prisma": "^6.19.3",
+    "prisma": "^7.8.0",
     "tailwindcss": "^4",
     "tsx": "^4.22.4",
     "typescript": "^5"
   },
   "allowScripts": {
-    "@prisma/engines@6.19.3": true,
     "esbuild@0.28.1": true,
     "msw@2.14.3": true,
-    "prisma@6.19.3": true,
     "sharp@0.34.5": true,
-    "unrs-resolver@1.11.1": true
+    "unrs-resolver@1.11.1": true,
+    "@prisma/engines@7.8.0": true,
+    "prisma@7.8.0": true
   }
 }
