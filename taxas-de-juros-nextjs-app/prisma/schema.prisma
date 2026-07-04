@@ -47,7 +47,7 @@ model FinancialInstitution {
   id        String    @id @default(dbgenerated("gen_random_uuid()")) @map("id_financial_institution") @db.Uuid
   publicId  String    @unique @map("public_id_financial_institution") @db.VarChar(30)
   name      String    @map("financial_institution_name")
-  cnpj      String    @map("finacial_institution_cnpj") @db.Char(8)
+  cnpj      String    @map("finacial_institution_cnpj") @db.VarChar(14)
   createdAt DateTime  @default(now()) @map("created_at")
   updatedAt DateTime? @updatedAt @map("updated_at")
 
