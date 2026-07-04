@@ -1,3 +1,4 @@
+import { SEARCH_TYPE_TOGGLE_SWITCH } from '@/src/constants';
 import { interestRateDataScraper } from '@/src/services/scraper/scraper';
 import { NextResponse } from 'next/server';
 
@@ -5,7 +6,9 @@ export async function POST(request: Request) {
     try {
         const { selectedPeriod, searchTargets } = await request.json();
 
-        if (!selectedPeriod || !Array.isArray(searchTargets)) {
+        const validSelectedPeriod = Object.keys(SEARCH_TYPE_TOGGLE_SWITCH).includes(selectedPeriod);
+
+        if (!selectedPeriod || !Array.isArray(searchTargets) || !validSelectedPeriod) {
             return NextResponse.json({ error: 'Parâmetros inválidos' }, { status: 400 });
         }
 
