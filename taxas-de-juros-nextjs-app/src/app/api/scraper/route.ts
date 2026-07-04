@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     try {
         const { selectedPeriod, searchTargets } = await request.json();
 
-        const validSelectedPeriod = Object.keys(SEARCH_TYPE_TOGGLE_SWITCH).includes(selectedPeriod);
+        const validSelectedPeriod = Object.values(SEARCH_TYPE_TOGGLE_SWITCH).includes(selectedPeriod);
 
         if (!selectedPeriod || !Array.isArray(searchTargets) || !validSelectedPeriod) {
             return NextResponse.json({ error: 'Parâmetros inválidos' }, { status: 400 });
