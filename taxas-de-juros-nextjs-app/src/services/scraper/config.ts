@@ -26,5 +26,5 @@ export const DEFAULT_TIMEOUTS = {
     TABLE: 8000,
     ELEMENT: 8500,
     STATE: 4500,
-    CONNECTION: 5000
+    CONNECTION: 5500
 } as const;
