@@ -27,7 +27,7 @@ model Modality {
 model HistoricalInterestRate {
   id           String     @id @default(dbgenerated("gen_random_uuid()")) @map("id_interest_rate") @db.Uuid
   publicId     String     @unique @map("public_id_interest_rate") @db.VarChar(30)
-  periodType   PeriodType @default(ANNUAL) @map("period_type")
+  periodType   PeriodType @default(ANNUAL) @map("interest_rate_period_type")
   interestRate Decimal    @map("interest_rate") @db.Decimal(5, 2)
   createdAt    DateTime   @default(now()) @map("created_at")
   updatedAt    DateTime?  @updatedAt @map("updated_at")
@@ -58,7 +58,7 @@ model FinancialInstitution {
 
 model CollectionPeriod {
   id          String    @id @default(dbgenerated("gen_random_uuid()")) @map("id") @db.Uuid
-  publicId    String    @unique @map("public_id") @db.VarChar(30)
+  publicId    String    @unique @map("public_id_collection_period") @db.VarChar(30)
   validFrom   DateTime  @map("valid_from") @db.Date
   validTo     DateTime  @map("valid_to") @db.Date
   collectedAt DateTime  @map("collected_at") @db.Date
