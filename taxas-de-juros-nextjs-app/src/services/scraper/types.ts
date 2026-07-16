@@ -11,7 +11,7 @@ export interface ModalityInterestRates {
 }
 
 export interface DataScraperError {
-    type: 'internalTargetError' | 'externalTargetError' | 'connectionError' | 'columnError' | 'internalScraperError' | 'unexpectedScraperError';
+    type: 'targetInternalError' | 'targetExternalError' | 'targetConnectionError' | 'connectionErrorServer' | 'columnError' | 'internalScraperError' | 'unexpectedScraperError';
     errorTarget?: string;
     errorDetails?: unknown
 }
